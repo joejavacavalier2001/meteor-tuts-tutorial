@@ -18,10 +18,14 @@ class PostListReactive extends React.Component {
             <div className="post">
                 {
                     posts.map((post) => {
+						post.views++;
                         return (
                             <div key={post._id}>
                                 <p>Post id: {post._id} </p>
                                 <p>Post title: {post.title}, Post Description: {post.description} </p>
+                                <p>Post type: {post.type} </p> 
+                                <p>Post created: {post.createdAt} </p> 
+                                <p>Post viewed: {post.views} </p> 
                                 <button onClick={() => {
                                     history.push("/posts/edit/" + post._id)
                                 }}> Edit post

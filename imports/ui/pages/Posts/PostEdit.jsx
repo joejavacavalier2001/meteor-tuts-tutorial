@@ -37,7 +37,7 @@ export default class PostEdit extends React.Component {
                     <AutoField name="title"/>
                     <LongTextField name="description"/>
 
-                    <button type='submit'>Edit post</button>
+                    <button type='submit'>Save post changes</button>
                     <button onClick={() => history.push('/posts')}>Back to posts</button>
                 </AutoForm>
             </div>

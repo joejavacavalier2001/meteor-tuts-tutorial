@@ -17,10 +17,20 @@ Meteor.methods({
         Posts.update({_id: _id, userId: this.userId}, {
             $set: {
                 title: postData.title,
-                description: postData.description
+                description: postData.description,
+				type: postData.type
             }
         });
     },
+
+	'secured.increment.views' (_id) {
+		Post.update({_id: _id, userId: this.userId}, {
+			$inc: {
+				views: 1
+			}
+		});
+		return Posts.findOne(_id);
+	},
 
     'secured.post_remove' (_id){
         Posts.remove({_id: _id, userId: this.userId});
