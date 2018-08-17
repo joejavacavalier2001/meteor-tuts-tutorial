@@ -14,5 +14,19 @@ Meteor.methods({
         }
 
         return true;
-    }
+    },
+
+	'getCurrentUserName' (){
+		var username = "";
+		var userid = Meteor.userId();
+		if (userid){
+			let userObj = Meteor.users.findOne(userid);
+			username = userObj["emails"][0]["address"];
+			let atSignIndex = username.indexOf("@");
+			if (atSignIndex){
+				username = username.substring(0,atSignIndex);
+			}
+		}
+        return username;
+	}
 });

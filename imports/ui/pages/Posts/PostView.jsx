@@ -1,6 +1,8 @@
 import React from 'react';
 import {AutoForm, AutoField, LongTextField} from 'uniforms-unstyled';
+import { Meteor } from 'meteor/meteor';
 import PostSchema from '/db/posts/schema';
+import CommentList from '/imports/ui/pages/Comments/CommentList';
 
 export default class PostView extends React.Component {
     constructor() {
@@ -40,19 +42,21 @@ export default class PostView extends React.Component {
 				</div>
 			);
         } 
-
+		let userName = Meteor.call('post.get.post.username.by.post',postLoaded);
         return (
 			<div key={postLoaded._id}>
-				<p>Post id: {postLoaded._id} </p>
 				<p>Post title: {postLoaded.title}</p>
 				<p>Post Description: {postLoaded.description} </p>
 				<p>Post type: {postLoaded.type} </p>
-				<p>Post created on: {postLoaded.createdAt.toString()} </p>
+				<p>Post modified: {postLoaded.lastModified.toString()} </p>
 				<p>Post viewed {postLoaded.views} time(s)</p>
+				<p>Post owner: {postLoaded.username} </p>
 				<button onClick={() => {
 					history.push("/posts/edit/" + postLoaded._id)
 				}}> Edit post
 				</button>
+				<p>Comments:</p>
+				<CommentList currentPostId={postLoaded._id} />
 			    <button onClick={() => history.push('/posts')}>Back to posts</button>	
 			</div>
         )

@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import SimplSchema from 'simpl-schema';
 
 export default new SimplSchema({
@@ -9,15 +10,15 @@ export default new SimplSchema({
 		type: Date,
 	    defaultValue: new Date()
 	},
+	lastModified: {
+		type: Date,
+	   	defaultValue: new Date()
+	},
 	views: {
 		type: Number,
 	    defaultValue: 0
 	},
     title: String,
     description: String,
-    userId: {
-        type: String,
-        optional: true
-    }
-
+    userId: String 
 });
