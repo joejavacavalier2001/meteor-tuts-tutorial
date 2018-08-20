@@ -6,7 +6,14 @@ import Security from '/imports/api/security';
 Meteor.methods({
     'comment.create'(comment) {
 		comment["ownerId"] = Meteor.userId();
-        return Comments.insert(comment);
+
+		let newCommentId = "";
+		try{
+			newCommentId = Comments.insert(comment);
+		} catch (e) {
+			console.log(e);
+		}
+        return newCommentId;
     },
 
     'comment.list' (currentPostId) {
@@ -33,6 +40,10 @@ Meteor.methods({
 			return comment;
 		});
     },
+
+	'comment.count' (currentPostId) {
+		return Comments.find({postId: currentPostId}).fetch().length;
+	},
 
     'comment.edit' (_id, comment) {
 		var newDate = new Date();

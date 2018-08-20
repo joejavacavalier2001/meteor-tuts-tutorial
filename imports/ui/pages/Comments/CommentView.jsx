@@ -29,9 +29,7 @@ export default class CommentView extends React.Component {
 			}
 			if (this.state.comment.userCanDelete){
 				buttonsRenderer[1] = (<button onClick={()=>{this.props.deleteCommentFunction(this.state.comment._id);}}>Delete comment</button>);
-			} else {
-				buttonsRenderer[1] = (<p>User cannot delete</p>);
-			}
+			} 
 		}
 		return buttonsRenderer;
 	}

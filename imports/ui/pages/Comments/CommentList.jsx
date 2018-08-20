@@ -9,7 +9,7 @@ export default class CommentList extends React.Component {
         super();
 		this.boundHandleCommentDelete = this.handleCommentDelete.bind(this);
 		this.inputTextRef = null;
-		this.state = {badUsage: false, commentsLoaded: null};
+		this.state = {badUsage: false, error: "", commentsLoaded: null};
     }
 	componentDidMount() {
 		if (!this.props.currentPostId){
@@ -77,6 +77,10 @@ export default class CommentList extends React.Component {
 	}
 
 	MakeCreateCommentForm(){
+		if (!Meteor.userId()){
+			return ("");
+		}
+
 		this.inputTextRef = React.createRef();
 		return (<>
 			<p>Create new comment here:</p>
@@ -88,18 +92,6 @@ export default class CommentList extends React.Component {
 				<SubmitField value="Save new comment"/>
 			</AutoForm>
 		</>);
-	}
-	componentWillUnmount() {
-		if (this.props.currentPostId){
-			Meteor.call('comment.all.delete',this.props.currentPostId,(err)=>{
-				if (!err){
-					console.log("Deleted all comments for post id " + this.props.currentPostId);
-				} else {
-					console.log("Problem deleting comments for post id " + this.props.currentPostId + ", " + err.reason);
-				}
-			});
-		}
-
 	}
     render() {
         const {commentsLoaded} = this.state;
@@ -114,6 +106,6 @@ export default class CommentList extends React.Component {
 		}
 
 		let commentListRendered = (commentsLoaded ? this.CommentsRenderer() : "");
-	   	return (<>{commentListRendered}{Meteor.userId() && this.MakeCreateCommentForm()}</>);
+	   	return (<>{commentListRendered}{this.MakeCreateCommentForm()}</>);
     }
 }

@@ -1,5 +1,6 @@
 import {Meteor} from 'meteor/meteor'
 import {Posts} from '/db';
+import {Comments} from '/db';
 import Security from '/imports/api/security';
 
 Meteor.methods({
@@ -44,6 +45,7 @@ Meteor.methods({
 	},
 
     'post.remove' (_id){
+		Comments.remove({postId: {$eq: _id}});
         Posts.remove(_id);
     },
 

@@ -7,8 +7,7 @@ import CommentList from '/imports/ui/pages/Comments/CommentList';
 export default class PostView extends React.Component {
     constructor() {
         super();
-        this.state = {post: null};
-		this.state = {err: null};
+        this.state = {post: null, err: null};
     }
 
     componentDidMount() {
@@ -41,8 +40,8 @@ export default class PostView extends React.Component {
 					<button onClick={() => history.push('/posts')}>Back to posts</button>
 				</div>
 			);
-        } 
-		let userName = Meteor.call('post.get.post.username.by.post',postLoaded);
+        }
+	   	let editButton = ((postLoaded.userCanEditDelete) ? (<button onClick={() => {history.push("/posts/edit/" + postLoaded._id)}}>Edit post</button>) : (""));	
         return (
 			<div key={postLoaded._id}>
 				<p>Post title: {postLoaded.title}</p>
@@ -51,10 +50,7 @@ export default class PostView extends React.Component {
 				<p>Post modified: {postLoaded.lastModified.toString()} </p>
 				<p>Post viewed {postLoaded.views} time(s)</p>
 				<p>Post owner: {postLoaded.username} </p>
-				<button onClick={() => {
-					history.push("/posts/edit/" + postLoaded._id)
-				}}> Edit post
-				</button>
+				{editButton}
 				<p>Comments:</p>
 				<CommentList currentPostId={postLoaded._id} />
 			    <button onClick={() => history.push('/posts')}>Back to posts</button>	

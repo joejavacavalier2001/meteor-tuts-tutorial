@@ -1,6 +1,6 @@
 import React from 'react';
 import { Meteor } from 'meteor/meteor';
-import CommentList from "../Comments/CommentList";
+import CommentCount from "../Comments/CommentCount";
 
 export default class PostList extends React.Component {
     constructor() {
@@ -100,7 +100,7 @@ export default class PostList extends React.Component {
 							this.props.history.push("/posts/view/" + post._id)
 						}}>View post</a></p>
 						{buttons}
-						<CommentList currentPostId={post._id} />
+						<CommentCount currentPostId={post._id} />
 						<p>&nbsp;</p>
 					</div>
 				)   
