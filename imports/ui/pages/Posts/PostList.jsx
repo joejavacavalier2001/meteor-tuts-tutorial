@@ -1,31 +1,27 @@
 import React from 'react';
 import { Meteor } from 'meteor/meteor';
-import CommentCount from "../Comments/CommentCount";
 
 export default class PostList extends React.Component {
     constructor() {
         super();
 		this.state = {posts: null};
-		Meteor.call('getCurrentUserName', (err,userName) => {
+
+		Meteor.call('getCurrentUserName', (err,currentUserName) => {
 			if (err) {
-				this.setState({error: err.reason});
-			} else {
-				var curUserName = userName;
-				var logOutInElements = "";
-				if (userName){
-					curUserName = "back ";
-					curUserName += userName;
-				}
-				Meteor.call('post.list', (err, postResults) => {
-					if (err){
-						this.setState({error: err.reason});
-					} else {
-						this.setState({username: curUserName, posts: postResults});
-					}
-				});
+				this.setState({error: err.reason})
+				return;
 			}
+			let curUserName = ((currentUserName) ? ("back " + currentUserName) : ""); 
+			Meteor.call('post.list', (err, postResults) => {
+				if (err){
+					this.setState({error: err.reason + " " + err.stack});
+				} else {
+					this.setState({username: curUserName, posts: postResults});
+				}
+			});
 		});
     }
+
 	makeCreateEditButtons() {
 		return (<><button onClick={() => {window.location.href = '/posts/create';}}>Create a new post</button><button onClick={() => {this.handleLogout();}}>Logout</button></>);
 	}
@@ -100,7 +96,7 @@ export default class PostList extends React.Component {
 							this.props.history.push("/posts/view/" + post._id)
 						}}>View post</a></p>
 						{buttons}
-						<CommentCount currentPostId={post._id} />
+						<p>Number of comments: {(post.comments && post.comments.length) ? post.comments.length : 0}</p>
 						<p>&nbsp;</p>
 					</div>
 				)   
@@ -136,7 +132,7 @@ export default class PostList extends React.Component {
             <>
 				<h1>Welcome {username}</h1>
                 {postRenderer}
-				{Meteor.userId() ? this.makeCreateEditButtons() : this.makeLoginRegisterButtons()}
+				{username ? this.makeCreateEditButtons() : this.makeLoginRegisterButtons()}
             </>
         )
     }

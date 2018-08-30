@@ -13,15 +13,19 @@ export default class CommentList extends React.Component {
     }
 	componentDidMount() {
 		if (!this.props.currentPostId){
-			this.state = {badUsage: true, commentsLoaded: null}
+			this.setState({badUsage: true, commentsLoaded: null});
 		} else {
-			Meteor.call('comment.list', this.props.currentPostId, (err, comments) => {
-				if (err){
-					this.setState({error: "Error loading initial comments: " + err.reason});
-				} else {
-					this.setState({commentsLoaded: comments});
-				}
-			});
+			if (this.props.initialCommentList){
+				this.setState({commentsLoaded: this.props.initialCommentList});
+			} else {	
+				Meteor.call('comment.list', this.props.currentPostId, (err, comments) => {
+					if (err){
+						this.setState({error: "Error loading initial comments: " + err.reason});
+					} else {
+						this.setState({commentsLoaded: comments});
+					}
+				});
+			}
 		}
 	}
 

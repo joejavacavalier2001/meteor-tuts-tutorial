@@ -18,55 +18,6 @@ export default class Security {
         }
     }
 	
-	static checkComment(comment){
-		if ((!comment) || (!(comment instanceof Object)) || (!comment.hasOwnProperty("ownerId"))){
-			return false;
-		}
-		return true;
-	}
-
-	static checkPost(post){
-		if ((!post) || (!(post instanceof Object)) || (!post.hasOwnProperty("userId"))){
-			return false;
-		}
-		return true;
-	}
-
-	static userCanEditComment(comment,userId){
-		let canEdit = false;
-		if (Security.checkComment(comment)){
-			try{
-				canEdit = ((userId === comment["ownerId"]) ? true : false);
-			} catch (e) {
-				canEdit = false;
-			}
-		}
-		return canEdit;
-	}
-
-	static userCanEditPost(post,currentUserId){
-		let canEdit = false;
-		if (Security.checkPost(post)){
-			canEdit = ((currentUserId === post["userId"]) ? true : false);
-		}
-		return canEdit;
-	}
-
-	static userCanDeleteComment(comment,userId,canEdit){
-		let canDelete = false;
-		if (canEdit){
-			return true; 
-		} else {
-			try{
-				let parentPost = Posts.findOne(comment.postId);
-				canDelete = ( ((parentPost) && (parentPost.hasOwnProperty("userId"))) ? (parentPost["userId"] === userId) : false); 
-			} catch(e) {
-				canDelete = false;
-			}
-		}
-		return canDelete;
-	}
-
 	static getUserName(theUserObj){
 		var userName = "";
 		if (theUserObj){
@@ -84,14 +35,6 @@ export default class Security {
 	}
 	static getCurrentUserName() {
         return Security.getUserName(Meteor.user());
-	}
-
-	static getUserNameById(userId){
-		var userName = "";
-		if (userId){
-			userName = this.getUserName(Meteor.users.findOne(userId));
-		}
-		return userName;
 	}
     // add other business logic checks here that you use throughout the app
     // something like: isUserAllowedToSeeDocument()

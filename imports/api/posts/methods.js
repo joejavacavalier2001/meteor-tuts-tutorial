@@ -1,7 +1,6 @@
-import {Meteor} from 'meteor/meteor'
+import {Meteor} from 'meteor/meteor';
 import {Posts} from '/db';
-import {Comments} from '/db';
-import Security from '/imports/api/security';
+import {postQuery} from './postQuery';
 
 Meteor.methods({
     'post.create'(post) {
@@ -10,14 +9,7 @@ Meteor.methods({
     },
 
     'post.list' () {
-        let postList = Posts.find({},{sort: {lastModified : -1}}).fetch();
-		var currentUserId = Meteor.userId();
-		return postList.map((post) => {
-			var username = Security.getUserNameById(post["userId"]);
-			var ableToEdit = Security.userCanEditPost(post,currentUserId);
-			Object.defineProperties(post, {'username': {enumerable: true, value: username}, 'userCanEditDelete': {enumerable: true, value: ableToEdit}} );
-			return post;
-		});
+		return postQuery.clone({specificPostById: false}).fetch();
     },
 
     'post.edit' (_id, post) {
@@ -31,30 +23,21 @@ Meteor.methods({
         });
     },
 
-	'post.increment.views' (_id) {
-		Posts.update(_id, {
+	'post.increment.views' (currentId) {
+		Posts.update(currentId, {
 			$inc: {
 				views: 1
 			}
 		});
-		var tempPost = Posts.findOne(_id);
-		var username = Security.getUserNameById(tempPost["userId"]);
-		var ableToEdit = Security.userCanEditPost(tempPost,Meteor.userId());
-		Object.defineProperties(tempPost, {'username': {enumerable: true, value: username}, 'userCanEditDelete': {enumerable: true, value: ableToEdit}} );
-		return tempPost;
+		return postQuery.clone({specificPostById: true, id: currentId}).fetchOne();
 	},
 
     'post.remove' (_id){
-		Comments.remove({postId: {$eq: _id}});
         Posts.remove(_id);
     },
 
-    'post.get' (_id) {
-        var tempPost = Posts.findOne(_id);
-		var username = Security.getUserNameById(tempPost["userId"]);
-		var ableToEdit = Security.userCanEditPost(tempPost,Meteor.userId());
-		Object.defineProperties(tempPost, {'username': {enumerable: true, value: username}, 'userCanEditDelete': {enumerable: true, value: ableToEdit}} );
-		return tempPost;
+    'post.get' (currentId) {
+		return postQuery.clone({specificPostById: true, id: currentId}).fetchOne();
     }
 
 });

@@ -1,7 +1,6 @@
 import {Meteor} from 'meteor/meteor'
 import {Comments} from '/db';
-import {Posts} from '/db';
-import Security from '/imports/api/security';
+import {commentQuery} from './commentQuery';
 
 Meteor.methods({
     'comment.create'(comment) {
@@ -17,32 +16,11 @@ Meteor.methods({
     },
 
     'comment.list' (currentPostId) {
-        let commentList = Comments.find({postId: currentPostId},{sort: {lastModified : -1}}).fetch();
-		var currentUserId = Meteor.userId();
-		return commentList.map((comment) => {
-			let username = Security.getUserNameById(comment["ownerId"]);
-			let ableToEdit = Security.userCanEditComment(comment,currentUserId);
-			let ableToDelete = Security.userCanDeleteComment(comment,currentUserId,ableToEdit);
-			Object.defineProperties(comment, {
-				'username': {
-					enumerable: true, 
-					value: username
-				}, 
-				'userCanEdit': {
-					enumerable: true, 
-					value: ableToEdit
-				},
-				'userCanDelete': {
-					enumerable: true,
-					value: ableToDelete
-				},
-			});
-			return comment;
-		});
+		return commentQuery.clone({getList: true, postId: currentPostId}).fetch();
     },
 
 	'comment.count' (currentPostId) {
-		return Comments.find({postId: currentPostId}).fetch().length;
+		return commentQuery.clone({getList: true, postId: currentPostId}).getCount();
 	},
 
     'comment.edit' (_id, comment) {
@@ -65,26 +43,7 @@ Meteor.methods({
 		Comments.remove({postId: {$eq: currentPostId}});
 	},
 
-    'comment.get' (_id) {
-		let tempComment = Comments.findOne(_id);
-		let currentUserId = Meteor.userId();
-		let username = Security.getUserNameById(tempComment["ownerId"]);
-		let ableToEdit = Security.userCanEditComment(tempComment,currentUserId);
-		let ableToDelete = Security.userCanDeleteComment(tempComment,currentUserId,ableToEdit);
-		Object.defineProperties(tempComment, {
-			'username': {
-				enumerable: true, 
-				value: username
-			}, 
-			'userCanEdit': {
-				enumerable: true, 
-				value: ableToEdit
-			},
-			'userCanDelete': {
-				enumerable: true,
-				value: ableToDelete
-			},
-		});
-        return tempComment;
+    'comment.get' (currentId) {
+		return commentQuery.clone({getCommentById: true, id: currentId}).fetchOne();
    	}
 });

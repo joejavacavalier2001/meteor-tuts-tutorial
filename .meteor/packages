@@ -24,4 +24,5 @@ react-meteor-data
 alanning:roles
 session@1.1.7
 cultofcoders:persistent-session
-underscore
+underscore@1.0.10
+cultofcoders:grapher

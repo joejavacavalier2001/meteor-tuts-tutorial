@@ -36,8 +36,8 @@ export default class PostEdit extends React.Component {
                 <AutoForm onSubmit={this.submit} schema={PostSchema} model={post}>
 					<ErrorsField />
 					<HiddenField name="userId" value="placeholder for required field" />
-                    <AutoField name="title" value={post.title} />
-                    <LongTextField name="description" value={post.description} />
+                    <AutoField name="title" />
+                    <LongTextField name="description" />
 					<AutoField name="type" />
                     <SubmitField value="Save post changes"/>
                     <button onClick={() => history.push('/posts')}>Back to posts</button>

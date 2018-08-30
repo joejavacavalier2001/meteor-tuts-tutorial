@@ -17,16 +17,26 @@ Meteor.methods({
     },
 
 	'getCurrentUserName' (){
-		var username = "";
-		var userid = Meteor.userId();
-		if (userid){
-			let userObj = Meteor.users.findOne(userid);
-			username = userObj["emails"][0]["address"];
-			let atSignIndex = username.indexOf("@");
-			if (atSignIndex){
-				username = username.substring(0,atSignIndex);
-			}
-		}
-        return username;
+		let currentUserObj = Meteor.users.createQuery({
+			$filters: {
+				_id: Meteor.userId()
+			},
+			_id: 1,
+			emailUsername: 1
+		}).fetchOne();
+		return ((currentUserObj) ? currentUserObj.emailUsername : "");
+	},
+
+	'getCurrentUser'() {
+		let findUserObj = Meteor.users.createQuery({
+			$filters: {
+				_id: Meteor.userId()
+			},
+			_id: 1,
+			emailUsername: 1
+		});
+
+		return findUserObj.fetchOne();
 	}
+
 });

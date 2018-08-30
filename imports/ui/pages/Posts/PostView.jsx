@@ -44,6 +44,7 @@ export default class PostView extends React.Component {
 	   	let editButton = ((postLoaded.userCanEditDelete) ? (<button onClick={() => {history.push("/posts/edit/" + postLoaded._id)}}>Edit post</button>) : (""));	
         return (
 			<div key={postLoaded._id}>
+				<p>Post id: {this.props.match.params._id}</p>
 				<p>Post title: {postLoaded.title}</p>
 				<p>Post Description: {postLoaded.description} </p>
 				<p>Post type: {postLoaded.type} </p>
@@ -52,7 +53,7 @@ export default class PostView extends React.Component {
 				<p>Post owner: {postLoaded.username} </p>
 				{editButton}
 				<p>Comments:</p>
-				<CommentList currentPostId={postLoaded._id} />
+				<CommentList currentPostId={postLoaded._id} initialCommentList={postLoaded.comments} />
 			    <button onClick={() => history.push('/posts')}>Back to posts</button>	
 			</div>
         )
