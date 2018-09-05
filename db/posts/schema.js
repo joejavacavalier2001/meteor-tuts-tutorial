@@ -1,10 +1,11 @@
 import { Meteor } from 'meteor/meteor';
+import {PostCategoriesEnum} from '/db/posts/enums/categories';
 import SimplSchema from 'simpl-schema';
 
 export default new SimplSchema({
 	type: {
 		type: String,
-		allowedValues: PostTypes 
+		allowedValues: _.values(PostCategoriesEnum) 
 	},
 	createdAt: {
 		type: Date,

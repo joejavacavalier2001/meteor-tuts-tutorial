@@ -1,7 +1,16 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
-export default ({children}) =>
-    <div className="app-container" id="app-container">
-        {children}
-    </div>
+const App = (props) => {
+    return(
+        <div className="app-container" id="app-container">
+            {props.children}
+        </div>
+    )
+};
 
+export default App;
+
+App.propTypes = {
+    children: PropTypes.any
+}

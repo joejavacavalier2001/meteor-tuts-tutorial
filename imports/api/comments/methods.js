@@ -1,49 +1,35 @@
 import {Meteor} from 'meteor/meteor'
-import {Comments} from '/db';
-import {commentQuery} from './commentQuery';
+import CommentSecurity from '/imports/api/comments/security';
+import Security from '/imports/api/security';
+import CommentService from '/imports/api/comments/service';
 
 Meteor.methods({
     'comment.create'(comment) {
-		comment["ownerId"] = Meteor.userId();
-
-		let newCommentId = "";
-		try{
-			newCommentId = Comments.insert(comment);
-		} catch (e) {
-			console.log(e);
-		}
-        return newCommentId;
+		Security.checkLoggedIn(Meteor.userId());
+		return CommentService.createComment(comment);
     },
 
     'comment.list' (currentPostId) {
-		return commentQuery.clone({getList: true, postId: currentPostId}).fetch();
+		return CommentService.getCommentsForPost(currentPostId);
     },
 
 	'comment.count' (currentPostId) {
-		return commentQuery.clone({getList: true, postId: currentPostId}).getCount();
+		return CommentService.getCommentCountForPost(currentPostId);
 	},
 
     'comment.edit' (_id, comment) {
-		var newDate = new Date();
-        Comments.update(_id, {
-            $set: {
-                text: comment.text,
-				lastModified: newDate 
-            }
-        });
-		comment["lastModified"] = newDate;
-		return comment;
+		Security.checkLoggedIn(Meteor.userId());
+		CommentSecurity.checkCurrentUserCanEdit(_id);
+		return CommentService.updateComment(_id, comment);
     },
 
     'comment.remove' (_id){
-        Comments.remove(_id);
+		Security.checkLoggedIn(Meteor.userId());
+		CommentSecurity.checkCurrentUserCanDelete(_id);
+		CommentService.deleteComment(_id);
     },
 
-	'comment.all.delete' (currentPostId){
-		Comments.remove({postId: {$eq: currentPostId}});
-	},
-
     'comment.get' (currentId) {
-		return commentQuery.clone({getCommentById: true, id: currentId}).fetchOne();
+		return CommentService.getCommentById(_id);
    	}
 });

@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {AutoForm, AutoField, ErrorsField} from 'uniforms-unstyled';
 import SimpleSchema from 'simpl-schema';
+import { Meteor } from 'meteor/meteor';
+import PropTypes from 'prop-types';
 
 export default class Register extends Component {
     constructor() {
@@ -55,3 +57,8 @@ const RegisterSchema = new SimpleSchema({
         }
     },
 });
+
+Register.propTypes = {
+    history: PropTypes.any
+
+};

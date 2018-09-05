@@ -1,3 +1,5 @@
+import {check} from 'meteor/check';
+import {Match} from 'meteor/check';
 import {Posts} from '/db';
 
 const postQuery = Posts.createQuery({
@@ -22,6 +24,11 @@ const postQuery = Posts.createQuery({
 	   	lastModified: 1,
 	  	userCanEdit: 1,
 		userCanDelete: 1
+	}
+}, {
+	validateParams: {
+		specificPostById: Boolean,
+		id: Match.Maybe(String)
 	}
 });
 export {postQuery};

@@ -1,6 +1,7 @@
 import {Meteor} from 'meteor/meteor';
 import {Posts} from '/db';
 import {Comments} from '/db';
+import PostSecurity from '/imports/api/posts/security';
 
 Posts.addLinks({
     'author': {
@@ -27,12 +28,15 @@ Posts.addReducers({
 	},
 	'userCanEditDelete': {
 		body: {
-			author: {_id: 1} 
+			_id: 1,
 		},
 		reduce(object) {
-			let currentAuthor = object["author"];
-			let currentId = Meteor.userId();
-			return ((currentId) && (currentId === currentAuthor._id));
+			try{
+				PostSecurity.checkCurrentUserCanEditDelete(object["_id"]);
+			} catch (e) {
+				return false;
+			}
+			return true;
 		}	
 	}
 });

@@ -1,6 +1,7 @@
 import {Meteor} from 'meteor/meteor';
 import {Comments} from '/db';
 import {Posts} from '/db';
+import CommentSecurity from '/imports/api/comments/security';
 
 Comments.addLinks({
     'author': {
@@ -27,29 +28,28 @@ Comments.addReducers({
 	},
 	'userCanEdit': {
 		body: {
-			author: {_id: 1} 
+			_id: 1
 		},
 		reduce(object) {
-			let currentAuthor = object["author"];
-			let currentId = Meteor.userId();
-			return ((currentId) && (currentId === currentAuthor._id));
+			try{
+				CommentSecurity.checkCurrentUserCanEdit(object["_id"]);
+			} catch(e) {
+				return false;
+			}
+			return true;
 		}	
 	},
 	'userCanDelete': {
 		body: {
-			author: {_id: 1},
-			post: {userId: 1},
-			userCanEdit: 1
+			_id: 1
 		},
 		reduce(object) {
-			let canEdit = object["userCanEdit"]; //((currentId) && (currentId === currentAuthor._id));
-			if (canEdit){
-				return true;
+			try{
+				CommentSecurity.checkCurrentUserCanDelete(object["_id"]);
+			} catch (e) {
+				return false;
 			}
-			let currentAuthor = object["author"];
-			let currentPost = object["post"];
-			let currentId = Meteor.userId();
-			return (currentPost.userId === currentId);
+			return true;
 		}
 	}
 });
