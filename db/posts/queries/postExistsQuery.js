@@ -6,18 +6,18 @@ import {Posts} from '/db';
 // the Mongo DB whether a post exists.
 
 const postExistQuery = Posts.createQuery({
-	$filter({filters, options, params}) {
-		filters._id = params.id;
-	},
-	_id: 1	
+    $filter({filters, options, params}) {
+        filters._id = params.id;
+    },
+    _id: 1
 }, {
-	validateParams: {
-		id: Match.Where((x) => {
-			check(x, String);
-			return x.length > 0;
-		})
+    validateParams: {
+        id: Match.Where((x) => {
+            check(x, String);
+            return x.length > 0;
+        })
  
-	}
+    }
 });
 export {postExistQuery};
 

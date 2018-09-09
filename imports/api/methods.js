@@ -16,27 +16,27 @@ Meteor.methods({
         return true;
     },
 
-	'getCurrentUserName' (){
-		let currentUserObj = Meteor.users.createQuery({
-			$filters: {
-				_id: Meteor.userId()
-			},
-			_id: 1,
-			emailUsername: 1
-		}).fetchOne();
-		return ((currentUserObj) ? currentUserObj.emailUsername : "");
-	},
+    'getCurrentUserName' (){
+        let currentUserObj = Meteor.users.createQuery({
+            $filters: {
+                _id: Meteor.userId()
+            },
+            _id: 1,
+            emailUsername: 1
+        }).fetchOne();
+        return ((currentUserObj) ? currentUserObj.emailUsername : "");
+    },
 
-	'getCurrentUser'() {
-		let findUserObj = Meteor.users.createQuery({
-			$filters: {
-				_id: Meteor.userId()
-			},
-			_id: 1,
-			emailUsername: 1
-		});
+    'getCurrentUser'() {
+        let findUserObj = Meteor.users.createQuery({
+            $filters: {
+                _id: Meteor.userId()
+            },
+            _id: 1,
+            emailUsername: 1
+        });
 
-		return findUserObj.fetchOne();
-	}
+        return findUserObj.fetchOne();
+    }
 
 });

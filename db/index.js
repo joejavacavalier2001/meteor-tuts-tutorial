@@ -5,5 +5,5 @@ import Comments from './comments/collection';
 export {
     Posts,
     Users,
-	Comments
+    Comments
 }
