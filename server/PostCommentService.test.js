@@ -204,7 +204,7 @@ describe('Post and Comment Services', function () {
     it('Should be able to edit a comment',function() {
         let sampleCommentObject = null;
         let modifiedCommentObject = null;
-        if (!global.sampleCommentId){
+        if (!sampleCommentId){
             assert.isOk(sampleCommentId,"Could not get a comment id from the previous test. Cannot continue.");
             return;
         }
