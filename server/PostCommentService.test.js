@@ -185,7 +185,7 @@ describe('Post and Comment Services', function () {
                 return ;
             }
             assert.strictEqual(commentCount,1,"There should only be exactly one comment saved for the current post.");
-            assert.isString(global.sampleCommentId,"Comment insertion possibily failed. No id available for newly inserted Comment object.");
+            assert.isString(sampleCommentId,"Comment insertion possibily failed. No id available for newly inserted Comment object.");
             try{
                 commentArray = CommentService.getCommentsForPost(samplePostId);
             } catch(e) {
@@ -259,7 +259,7 @@ describe('Post and Comment Services', function () {
             try {
                 samplePostObject = PostService.getPostById(samplePostId);
             } catch(e){
-                assert.isOk(e,"Exception thrown after attempting to retrieve a deleted post: " + e);
+                assert.isNotOk(e,"Exception thrown after attempting to retrieve a deleted post: " + e);
                 return;
             }
             assert.isNotOk(samplePostObject,"This sample post should have been deleted");
@@ -267,7 +267,7 @@ describe('Post and Comment Services', function () {
                 try{
                     sampleCommentObject = CommentService.getCommentById(sampleCommentId);
                 } catch(e){
-                    assert.isOk(e,"Exception thrown after attempting to retrieve a deleted comment for a deleted post: " + e);
+                    assert.isNotOk(e,"Exception thrown after attempting to retrieve a deleted comment for a deleted post: " + e);
                     return;
                 }
                 if ((sampleCommentObject) && (sampleCommentObject instanceof Object)){
