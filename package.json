@@ -12,16 +12,20 @@
   },
   "pre-commit": "lint-staged",
   "dependencies": {
-    "@babel/runtime": "^7.0.0-beta.36",
+    "@babel/runtime": "^7.0.0-beta.55",
+    "ajv": "^6.5.3",
     "bcrypt": "^1.0.3",
+    "eslint": "^5.6.0",
+    "fbjs": "^1.0.0",
+    "graphql": "^0.8.2",
     "history": "^4.7.2",
     "imports": "^1.0.0",
-    "meteor-node-stubs": "^0.3.2",
+    "meteor-node-stubs": "^0.4.1",
     "mocha": "^5.2.0",
     "moment": "^2.20.1",
     "prop-types": "^15.6.1",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "simpl-schema": "^1.4.2",
@@ -29,10 +33,8 @@
     "uniforms-unstyled": "^1.23.0"
   },
   "devDependencies": {
-    "babel-preset-env": "^1.7.0",
-    "babel-register": "^6.26.0",
     "chai": "^4.1.2",
     "eslint-plugin-meteor": "^5.1.0",
-    "sinon": "^6.2.0"
+    "sinon": "^6.3.4"
   }
 }

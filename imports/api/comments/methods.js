@@ -1,7 +1,7 @@
 import {Meteor} from 'meteor/meteor'
 import CommentSecurity from '/imports/api/comments/security';
 import Security from '/imports/api/security';
-import CommentService from '/imports/api/comments/service';
+import CommentService from '/imports/api/comments/services/service';
 
 Meteor.methods({
     'comment.create'(comment) {
@@ -17,16 +17,16 @@ Meteor.methods({
         return CommentService.getCommentCountForPost(currentPostId);
     },
 
-    'comment.edit' (_id, comment) {
+    'comment.edit' (currentId, comment) {
         Security.checkLoggedIn(Meteor.userId());
-        CommentSecurity.checkCurrentUserCanEdit(_id);
-        return CommentService.updateComment(_id, comment);
+        CommentSecurity.checkCurrentUserCanEdit(currentId);
+        return CommentService.updateComment(currentId, comment);
     },
 
-    'comment.remove' (_id){
+    'comment.remove' (currentId){
         Security.checkLoggedIn(Meteor.userId());
-        CommentSecurity.checkCurrentUserCanDelete(_id);
-        CommentService.deleteComment(_id);
+        CommentSecurity.checkCurrentUserCanDelete(currentId);
+        CommentService.deleteComment(currentId);
     },
 
     'comment.get' (currentId) {

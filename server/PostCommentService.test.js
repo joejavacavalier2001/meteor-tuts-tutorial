@@ -2,9 +2,12 @@
 import {assert} from 'chai';
 import { Meteor } from 'meteor/meteor'
 import { PostCategoriesEnum } from '/db/posts/enums/categories';
-import CommentService from '/imports/api/comments/service';
-import PostService from '/imports/api/posts/service';
+import CommentService from '/imports/api/comments/services/service';
+import PostService from '/imports/api/posts/services/service';
 
+// We need two dummy accounts on the local meteor system:
+// Username: "a@blah.com", password: "a"
+// Username: "b@blah.com", password: "b"
 
 describe('Post and Comment Services', function () {
     var samplePost = {title: 'Sample title', description: 'Sample description', type: PostCategoriesEnum.NATURE};
@@ -13,30 +16,16 @@ describe('Post and Comment Services', function () {
     var sampleCommentId = "-1";
 	
 
-    var loginFirstDummyUser = function(){
+    var loginDummyUser = function(username,password){
         let currentUserId;
         try{
-            Meteor.loginWithPassword('a@blah', 'a');
+            Meteor.loginWithPassword(username, password);
         } catch(e) {
             return false;
         }
         currentUserId = Meteor.userId();
         if (!currentUserId){
-            assert.isOk(currentUserId,"Meteor system could not login dummy user.");
-            return false;
-        }
-        return true;
-    };
-
-    var loginSecondDummyUser = function(){
-        let currentUserId;
-        try{
-            Meteor.loginWithPassword('b@blah', 'b');
-        } catch(e) {
-            return false;
-        }
-        currentUserId = Meteor.userId();
-        if (!currentUserId){
+            assert.isOk(currentUserId,"Meteor system could not login dummy user. Please ensure that the dummy accounts are properly created.");
             return false;
         }
         return true;
@@ -60,7 +49,7 @@ describe('Post and Comment Services', function () {
             return;
         }
         let mustHaveProperties = ['title','description','type','username','userCanEditDelete'];
-        let reducerCallback = (acc, currentProp) => {return (acc && post.hasOwnProperty(currentProp));};
+        let reducerCallback = (previousConditions, currentProperty) => {return (previousConditions && post.hasOwnProperty(currentProperty));};
         if (mustHaveProperties.reduce(reducerCallback,true)){
             return true;
         }
@@ -78,13 +67,14 @@ describe('Post and Comment Services', function () {
             return;
         }
         let mustHaveProperties = ['text','username','userCanEdit','userCanDelete'];
-        let reducerCallback = (acc, currentProp) => {return (acc && comment.hasOwnProperty(currentProp));};
+        let reducerCallback = (previousConditions, currentProperty) => {return (previousConditions && comment.hasOwnProperty(currentProperty));};
         if (mustHaveProperties.reduce(reducerCallback,true)){
             return true;
         }
         assert.containsAllKeys(comment,mustHaveProperties,"Retrieved comment is missing one or more important properties.");
         return false;
     };
+
     beforeEach(function() {
         //If there is a logged in user, try to logout the user before each test
         try{
@@ -98,7 +88,7 @@ describe('Post and Comment Services', function () {
         var samplePostObject = null;
         var localSamplePostId = null;
 
-        if (loginFirstDummyUser()){
+        if (loginDummyUser("a@blah.com","a")){
             try {
                 localSamplePostId = PostService.createPost(samplePost);
                 if (!localSamplePostId){
@@ -121,7 +111,7 @@ describe('Post and Comment Services', function () {
             assert.isOk(samplePostId,"Could not get a post id from the previous test. Cannot continue.");
             return;
         }
-        if (loginFirstDummyUser()){
+        if (loginDummyUser("a@blah.com","a")){
             try {
                 console.log("global post id is " + samplePostId); // eslint-disable-line no-console
                 samplePostObject = PostService.getPostById(samplePostId);
@@ -143,7 +133,7 @@ describe('Post and Comment Services', function () {
                     assert.strictEqual(postUpdateStatus,1,"Problem saving specific modified post object: " + e);
                 }
                 if (postUpdateStatus !== 1){
-                    assert.strictEqual(postUpdateStatus,1,"Problem saving specific modified post object");
+                    assert.strictEqual(postUpdateStatus,1,"Problem saving specific modified post object. Return value from updatePost = " + postUpdateStatus);
                     return;
                 }
                 samplePostObject = null;
@@ -170,7 +160,7 @@ describe('Post and Comment Services', function () {
             assert.isOk(samplePostId,"Could not get a post id from the previous test. Cannot continue.");
             return;
         }
-        if (loginSecondDummyUser()){
+        if (loginDummyUser("b@blah.com","b")){
             sampleComment['postId'] = samplePostId;
             try{
                 sampleCommentId = CommentService.createComment(sampleComment);
@@ -208,7 +198,7 @@ describe('Post and Comment Services', function () {
             assert.isOk(sampleCommentId,"Could not get a comment id from the previous test. Cannot continue.");
             return;
         }
-        if (loginSecondDummyUser()){
+        if (loginDummyUser("b@blah.com","b")){
             try{
                 sampleCommentObject = CommentService.getCommentById(sampleCommentId);
             } catch(e){
@@ -249,7 +239,7 @@ describe('Post and Comment Services', function () {
             assert.isOk(samplePostId,"Could not get a post id from the previous test. Cannot continue.");
             return;
         }
-        if (loginFirstDummyUser()){
+        if (loginDummyUser("a@blah.com","a")){
             try{
                 PostService.deletePost(samplePostId);
             } catch(e){
