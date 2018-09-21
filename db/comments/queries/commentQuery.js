@@ -20,6 +20,7 @@ const commentQuery = Comments.createQuery({
 }, {
     validateParams: {
         getList: Boolean,
+        /*eslint new-cap: ["error", { "capIsNew": false }]*/ /*I can't change how the Meteor API is spelled and/or capitalized.*/
         getCommentById: Match.Maybe(Boolean),
         id: Match.Maybe(String)
     }

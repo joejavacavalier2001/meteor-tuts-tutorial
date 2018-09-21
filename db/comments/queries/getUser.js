@@ -9,6 +9,7 @@ const findCommentAuthor = Comments.createQuery({
     ownerId: 1
 }, {
     validateParams: {
+        /*eslint new-cap: ["error", { "capIsNew": false }]*/ /*I can't change how the Meteor API is spelled and/or capitalized.*/
         id: Match.Where((x) => {
             check(x, String);
             return x.length > 0;

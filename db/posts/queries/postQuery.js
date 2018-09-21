@@ -27,6 +27,7 @@ const postQuery = Posts.createQuery({
 }, {
     validateParams: {
         specificPostById: Boolean,
+        /*eslint new-cap: ["error", { "capIsNew": false }]*/ /*I can't change how the Meteor API is spelled and/or capitalized.*/
         id: Match.Maybe(String)
     }
 });
