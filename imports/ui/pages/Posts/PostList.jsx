@@ -40,6 +40,7 @@ export default class PostList extends React.Component {
             this.setState({error: err.reason});
         }
     }
+
     handleLogout() {
         Meteor.logout((err) => {
             if (err){
@@ -101,13 +102,13 @@ export default class PostList extends React.Component {
                     history.push("/posts/view/" + post._id);
                 };
                 return (
-					 <div key={post._id}>
+                    <div key={post._id}>
                         <p>Post title: {post.title}</p>
                         <p>Post created by: {post.username}</p>
                         <p><a href="javascript:void(0)" onClick={viewFunction}>View post</a></p>
                         {buttons}
                         <p>Number of comments: {(post.comments && post.comments.length) ? post.comments.length : 0}</p>
-                        <p>Viewed: {post.views} times</p>
+                        <p>Viewed: {post.views} time{post.views !== 1 ? "s" : ""}</p>
                         <p>&nbsp;</p>
                     </div>
                 )
@@ -129,7 +130,7 @@ export default class PostList extends React.Component {
 
     render() {
         const {username} = this.state;
-
+        
         if (this.state.error){
             return (<p>Error retrieving posts: {this.state.error}</p>);
         }
@@ -138,11 +139,11 @@ export default class PostList extends React.Component {
         }
         var postRenderer = this.createPostsRenderer();
         return (
-            <>
+			<>
 				<h1>Welcome {username}</h1>
-                {postRenderer}
+				{postRenderer}
 				{username ? this.makeCreateEditButtons() : this.makeLoginRegisterButtons()}
-            </>
+			</>
         )
     }
 }

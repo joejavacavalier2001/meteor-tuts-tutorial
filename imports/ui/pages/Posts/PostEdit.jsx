@@ -36,7 +36,7 @@ export default class PostEdit extends React.Component {
         let boundSubmitFunction = submitFunction.bind(this);
         let backFunction = function(){history.push('/posts');};
         return (
-            <div className="post">
+            <>
                 <AutoForm onSubmit={boundSubmitFunction} schema={PostSchema} model={post}>
                     <ErrorsField />
                     <HiddenField name="userId" value="placeholder for required field" />
@@ -46,7 +46,7 @@ export default class PostEdit extends React.Component {
                     <SubmitField value="Save post changes"/>
                     <button onClick={backFunction}>Back to posts</button>
                 </AutoForm>
-            </div>
+            </>
         )
     }
 }

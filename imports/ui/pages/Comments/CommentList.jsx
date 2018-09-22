@@ -12,6 +12,7 @@ export default class CommentList extends React.Component {
         this.inputTextRef = null;
         this.state = {badUsage: false, error: "", commentsLoaded: null};
     }
+
     componentDidMount() {
         if (!this.props.currentPostId){
             this.setState({badUsage: true, commentsLoaded: null});
@@ -50,68 +51,71 @@ export default class CommentList extends React.Component {
         });
     }
 
-    submit = (comment) => {
-        Meteor.call('comment.create', comment, (err,newId) => {
-            if (err) {
-                alert(err.reason);
-            } else {
-                Meteor.call('comment.list',this.props.currentPostId, (err, comments) => {
-                    if (err){
-                        alert(err.reason);
-                    } else {
-                        this.setState({commentsLoaded: comments});
-                    }
-                });
-            }
-        });
-    };
+	submit = (comment) => {
+	    Meteor.call('comment.create', comment, (err,newId) => {
+	        if (err) {
+	            alert(err.reason);
+	        } else {
+	            Meteor.call('comment.list',this.props.currentPostId, (err, comments) => {
+	                if (err){
+	                    alert(err.reason);
+	                } else {
+	                    this.setState({commentsLoaded: comments});
+	                }
+	            });
+	        }
+	    });
+	};
 
-    makeCommentsRenderer() {
-        if (!this.state.commentsLoaded){
-            return (<p>Loading...</p>);
-        } else if (!this.state.commentsLoaded.length) {
-            return "";
-        } else {
-            return this.state.commentsLoaded.map((comment) => {
-                return (
-					 <CommentView commentInitialContent={comment} key={comment._id} deleteCommentFunction={this.boundHandleCommentDelete} />
-                );
-            });
-        }
-    }
+	makeCommentsRenderer() {
+	    if (!this.state.commentsLoaded){
+	        return (<p>Loading...</p>);
+	    } else if (!this.state.commentsLoaded.length) {
+	        return "";
+	    } else {
+	        return this.state.commentsLoaded.map((comment) => {
+	            return (
+	                <CommentView commentInitialContent={comment} key={comment._id} deleteCommentFunction={this.boundHandleCommentDelete} />
+	            );
+	        });
+	    }
+	}
 
-    makeCreateCommentForm(){
-        if (!Meteor.userId()){
-            return ("");
-        }
+	makeCreateCommentForm(){
+	    if (!Meteor.userId()){
+	        return ("");
+	    }
 
-        this.inputTextRef = React.createRef();
-        return (<>
-			<p>Create new comment here:</p>
-			<AutoForm onSubmit={this.submit} schema={CommentSchema}>
-			    <ErrorsField />
-			    <LongTextField name="text" inputRef={this.inputTextRef} />
-			    <HiddenField name="ownerId" value="placeholder for required field" />
-			    <HiddenField name="postId" value={this.props.currentPostId} />
-			    <SubmitField value="Save new comment"/>
-			</AutoForm>
-		</>);
-    }
-    render() {
-        const {commentsLoaded} = this.state;
-        const {badUsage} = this.state;
-        const {error} = this.state;
+	    this.inputTextRef = React.createRef();
+	    return (
+			<>
+				<p>Create new comment here:</p>
+				<AutoForm onSubmit={this.submit} schema={CommentSchema}>
+				    <ErrorsField />
+				    <LongTextField name="text" inputRef={this.inputTextRef} />
+				    <HiddenField name="ownerId" value="placeholder for required field" />
+				    <HiddenField name="postId" value={this.props.currentPostId} />
+				    <SubmitField value="Save new comment"/>
+				</AutoForm>
+			</>
+	    );
+	}
 
-        if (badUsage){
-            return (<div>Invalid parameters sent to CommentList</div>);
-        }
-        if (error) {
-            return (<div>{error}</div>);
-        }
+	render() {
+	    const {commentsLoaded} = this.state;
+	    const {badUsage} = this.state;
+	    const {error} = this.state;
 
-        let commentListRendered = (commentsLoaded ? this.makeCommentsRenderer() : "");
-        return (<>{commentListRendered}{this.makeCreateCommentForm()}</>);
-    }
+	    if (badUsage){
+	        return (<div>Invalid parameters sent to CommentList</div>);
+	    }
+	    if (error) {
+	        return (<div>{error}</div>);
+	    }
+
+	    let commentListRendered = (commentsLoaded ? this.makeCommentsRenderer() : "");
+	    return (<>{commentListRendered}{this.makeCreateCommentForm()}</>);
+	}
 }
 
 CommentList.propTypes = {

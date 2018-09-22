@@ -10,8 +10,6 @@ export default class CommentCreate extends React.Component {
     }
 
     submit(comment) {
-        alert("current ownerId will be " + comment.ownerId);
-        alert("postId will be " + comment.postId);
         Meteor.call('comment.create', comment, (err) => {
             if (err) {
                 return alert(err.reason);
