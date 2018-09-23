@@ -28,20 +28,24 @@ I'm not quite sure.
 The first Meteor package helped me to simplify the queries I make to the Mongo DB.
 
 You can add that package to your Meteor system with this command:
+```bash
 meteor add cultofcoders:grapher
-
+```
 
 The second Meteor package should help me to automate certain tasks
 that I want to happen before and after modifications to the data in the database.
 
 You can add that package to your Meteor system with this comment:
+```bash
 meteor add matb33:collection-hooks
-
+```
 
 The third Meteor package helps me to run and view the results
 of my unit tests. I wanted some assurance that my database queries and commands
 returned the expected results regardless of my choice and implementation of any GUI. 
 
 You can add that package to your Meteor system with this command:
+```bash
 meteor add cultofcoders:mocha
+```
 
