@@ -28,7 +28,7 @@ Posts.addReducers({
     },
     'userCanEditDelete': {
         body: {
-            _id: 1,
+            _id: 1
         },
         reduce(object) {
             try{

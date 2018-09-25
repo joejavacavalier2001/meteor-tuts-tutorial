@@ -11,15 +11,11 @@ Meteor.users.addLinks({
 Meteor.users.addReducers({
     emailUsername: {
         body: {
-            emails:1,
+            emails:1
         },
         reduce(object) {
             let emails = object["emails"];
             let username = emails[0].address;
-            //let atSignIndex = username.indexOf("@");
-            //if (atSignIndex){
-            //	username = username.substring(0,atSignIndex);
-            //}
             return username;
         }
     }

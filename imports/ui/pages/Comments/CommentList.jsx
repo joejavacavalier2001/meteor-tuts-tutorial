@@ -87,17 +87,19 @@ export default class CommentList extends React.Component {
 	    }
 
 	    this.inputTextRef = React.createRef();
+
+	    // I will avoid using the React Fragment syntax. That syntax disrupts the color coding in github!
 	    return (
-			<>
-				<p>Create new comment here:</p>
-				<AutoForm onSubmit={this.submit} schema={CommentSchema}>
+	        <div>
+	            <p>Create new comment here:</p>
+	            <AutoForm onSubmit={this.submit} schema={CommentSchema}>
 				    <ErrorsField />
 				    <LongTextField name="text" inputRef={this.inputTextRef} />
 				    <HiddenField name="ownerId" value="placeholder for required field" />
 				    <HiddenField name="postId" value={this.props.currentPostId} />
 				    <SubmitField value="Save new comment"/>
-				</AutoForm>
-			</>
+	            </AutoForm>
+	        </div>
 	    );
 	}
 
@@ -114,7 +116,7 @@ export default class CommentList extends React.Component {
 	    }
 
 	    let commentListRendered = (commentsLoaded ? this.makeCommentsRenderer() : "");
-	    return (<>{commentListRendered}{this.makeCreateCommentForm()}</>);
+	    return (<div>{commentListRendered}{this.makeCreateCommentForm()}</div>);
 	}
 }
 

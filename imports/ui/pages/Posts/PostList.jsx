@@ -5,40 +5,22 @@ import PropTypes from 'prop-types';
 export default class PostList extends React.Component {
     constructor() {
         super();
-        this.state = {posts: null};
+        this.state = {posts: null, introductoryString: ""};
 
         Meteor.call('getCurrentUserName', (err,currentUserName) => {
             if (err) {
                 this.setState({error: err.reason})
-                return;
+            } else {
+                let newIntroductoryString = ((currentUserName) ? ("back " + currentUserName) : "");
+                Meteor.call('post.list', (err, postResults) => {
+                    if (err){
+                        this.setState({error: err.reason + " " + err.stack});
+                    } else {
+                        this.setState({introductoryString: newIntroductoryString, posts: postResults});
+                    }
+                });
             }
-            let curUserName = ((currentUserName) ? ("back " + currentUserName) : "");
-            Meteor.call('post.list', (err, postResults) => {
-                if (err){
-                    this.setState({error: err.reason + " " + err.stack});
-                } else {
-                    this.setState({username: curUserName, posts: postResults});
-                }
-            });
         });
-    }
-
-    makeCreateEditButtons() {
-        let gotoCreateFunction = function(){window.location.href = '/posts/create';};
-        let boundGotoLogoutFunction = this.handleLogout.bind(this);
-        return (<><button onClick={gotoCreateFunction}>Create a new post</button><button onClick={boundGotoLogoutFunction}>Logout</button></>);
-    }
-
-    makeLoginRegisterButtons(){
-        let boundGotoLoginFunction = this.handleLogin.bind(this);
-        let boundGotoRegisterFunction = this.handleRegister.bind(this);
-        return (<><button onClick={boundGotoLoginFunction}>Login</button><button onClick={boundGotoRegisterFunction}>Register</button></>);
-    }
-
-    handleError(err) {
-        if ((err) && (err.reason)){
-            this.setState({error: err.reason});
-        }
     }
 
     handleLogout() {
@@ -50,7 +32,7 @@ export default class PostList extends React.Component {
                     if (err){
                         this.setState({error: err.reason});
                     } else {
-                        this.setState({username: "", posts: postResults});
+                        this.setState({introductoryString: "", posts: postResults});
                     }
                 });
             }
@@ -63,6 +45,24 @@ export default class PostList extends React.Component {
 
     handleRegister() {
         window.location.href = '/register';
+    }
+
+    makeCreateEditButtons() {
+        let gotoCreateFunction = function(){window.location.href = '/posts/create';};
+        let boundGotoLogoutFunction = this.handleLogout.bind(this);
+        return (<div><button onClick={gotoCreateFunction}>Create a new post</button><button onClick={boundGotoLogoutFunction}>Logout</button></div>);
+    }
+
+    makeLoginRegisterButtons(){
+        let boundGotoLoginFunction = this.handleLogin.bind(this);
+        let boundGotoRegisterFunction = this.handleRegister.bind(this);
+        return (<div><button onClick={boundGotoLoginFunction}>Login</button><button onClick={boundGotoRegisterFunction}>Register</button></div>);
+    }
+
+    handleError(err) {
+        if ((err) && (err.reason)){
+            this.setState({error: err.reason});
+        }
     }
 
     handleDelete(postId) {
@@ -89,31 +89,30 @@ export default class PostList extends React.Component {
         }
         const {history} = this.props;
         return (
-            this.state.posts.map((post) => {
+            this.state.posts.map((individualPost) => {
                 let buttons = "";
-                if (post["userCanEditDelete"]){
-                    let editFunction = function(){history.push("/posts/edit/" + post._id);};
-                    let deleteFunction = function(){this.handleDelete(post._id);};
-                    let boundDeleteFunction = deleteFunction.bind(this);
-                    buttons = (<><button onClick={editFunction}>Edit post</button>
-						<button onClick={boundDeleteFunction}>Delete post</button></>);
+                if (individualPost["userCanEditDelete"]){
+                    let editFunction = function(){history.push("/posts/edit/" + individualPost._id);};
+                    let boundDeleteFunction = this.handleDelete.bind(this,individualPost._id);
+                    buttons = (<div><button onClick={editFunction}>Edit post</button>
+                        <button onClick={boundDeleteFunction}>Delete post</button></div>);
                 }
                 let viewFunction = function(){
-                    history.push("/posts/view/" + post._id);
+                    history.push("/posts/view/" + individualPost._id);
                 };
                 return (
-                    <div key={post._id}>
-                        <p>Post title: {post.title}</p>
-                        <p>Post created by: {post.username}</p>
+                    <div key={individualPost._id}>
+                        <p>Post title: {individualPost.title}</p>
+                        <p>Post created by: {individualPost.username}</p>
                         <p><a href="javascript:void(0)" onClick={viewFunction}>View post</a></p>
                         {buttons}
-                        <p>Number of comments: {(post.comments && post.comments.length) ? post.comments.length : 0}</p>
-                        <p>Viewed: {post.views} time{post.views !== 1 ? "s" : ""}</p>
+                        <p>Number of comments: {(individualPost.comments && individualPost.comments.length) ? individualPost.comments.length : 0}</p>
+                        <p>Viewed: {individualPost.views} time{individualPost.views !== 1 ? "s" : ""}</p>
                         <p>&nbsp;</p>
                     </div>
-                )
+                );
             })
-        )
+        );
     }
 
     componentDidUpdate(prevProps, prevState, snapshot){
@@ -129,22 +128,25 @@ export default class PostList extends React.Component {
     }
 
     render() {
-        const {username} = this.state;
-        
-        if (this.state.error){
-            return (<p>Error retrieving posts: {this.state.error}</p>);
+        const {introductoryString} = this.state;
+        const {error} = this.state;
+        const {posts} = this.state;
+
+        if (error){
+            return (<p>Error retrieving posts: {error}</p>);
         }
-        if (!this.state.posts) {
+        if (!posts) {
             return (<p>Loading....</p>);
         }
-        var postRenderer = this.createPostsRenderer();
+
+        // I will avoid using the React Fragment syntax. That syntax disrupts the color coding in github!
         return (
-			<>
-				<h1>Welcome {username}</h1>
-				{postRenderer}
-				{username ? this.makeCreateEditButtons() : this.makeLoginRegisterButtons()}
-			</>
-        )
+            <div>
+                <h1>Welcome {introductoryString}</h1>
+                {this.createPostsRenderer()}
+                {introductoryString ? this.makeCreateEditButtons() : this.makeLoginRegisterButtons()}
+            </div>
+        );
     }
 }
 
