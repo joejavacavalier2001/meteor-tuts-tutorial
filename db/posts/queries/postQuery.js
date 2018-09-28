@@ -11,7 +11,7 @@ const postQuery = Posts.createQuery({
             filters._id = params.id;
         }
     },
-    $options: {lastModified : -1},
+    $options: {sort: {lastModified: -1}},
     type: 1,
     title: 1,
     description: 1,
@@ -27,7 +27,7 @@ const postQuery = Posts.createQuery({
         lastModified: 1,
         userCanEdit: 1,
         userCanDelete: 1,
-        $options: {lastModified: -1} //Attach and retrieve a comments array in descending sorted order!
+        $options: {sort: {lastModified: -1}} //Attach and retrieve a comments array in descending sorted order!
     }
 }, {
     validateParams: {
