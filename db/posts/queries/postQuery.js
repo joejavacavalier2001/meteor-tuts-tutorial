@@ -1,6 +1,10 @@
 import {Match} from 'meteor/check';
 import {Posts} from '/db';
 
+// This is the main Grapher query for the PostService module.
+// This query can be used to retrieve a single post object or all
+// the post objects in the Mongo DB.
+//
 const postQuery = Posts.createQuery({
     $filter({filters, options, params}) {
         if (params.specificPostById){
@@ -22,13 +26,14 @@ const postQuery = Posts.createQuery({
         postId: 1,
         lastModified: 1,
         userCanEdit: 1,
-        userCanDelete: 1
+        userCanDelete: 1,
+        $options: {lastModified: -1} //Attach and retrieve a comments array in descending sorted order!
     }
 }, {
     validateParams: {
         specificPostById: Boolean,
         /*eslint new-cap: ["error", { "capIsNew": false }]*/ /*I can't change how the Meteor API is spelled and/or capitalized.*/
-        id: Match.Maybe(String)
+        id: Match.Maybe(String) // I don't always expect an id parameter, but if it exists, it should be a string!
     }
 });
 export {postQuery};

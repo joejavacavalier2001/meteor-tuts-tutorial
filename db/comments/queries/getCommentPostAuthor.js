@@ -2,6 +2,10 @@ import {check} from 'meteor/check';
 import {Match} from 'meteor/check';
 import {Comments} from '/db';
 
+// The CommentSecurity modules needs to know who created the post object
+// for each comment object because those users are allowed to delete comments
+// for the Post objects.
+//
 const findCommentPostAuthor = Comments.createQuery({
     $filter({filters, options, params}) {
         filters._id = params.id;

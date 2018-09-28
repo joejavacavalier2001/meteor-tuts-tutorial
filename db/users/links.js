@@ -8,6 +8,8 @@ Meteor.users.addLinks({
     }
 });
 
+
+// Return the first email address on file whenever anyone asks for a "username"
 Meteor.users.addReducers({
     emailUsername: {
         body: {

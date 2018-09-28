@@ -26,6 +26,8 @@ Posts.addReducers({
             return currentAuthor["emailUsername"];
         }
     },
+    // Return a Boolean property that indicates
+    // whether the current user has permission to edit or delete the current post object
     'userCanEditDelete': {
         body: {
             _id: 1
