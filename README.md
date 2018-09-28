@@ -18,7 +18,7 @@ npm run start # to run the project
 Roger's addendum:
 
 If the project does not "build" into a Meteor application 
-and you see errors from the Meteor system, you may need to add three extra Meteor packages. 
+and you see errors from the Meteor system, you may need to add five extra Meteor packages. 
 These Meteor packages are mentioned in the Meteor configuration files for this project
 (in the .meteor/packages file). They are not listed in the "package.json" file.
 
@@ -47,5 +47,14 @@ returned the expected results regardless of my choice and implementation of any 
 You can add that package to your Meteor system with this command:
 ```bash
 meteor add cultofcoders:mocha
+```
+
+The fourth and fifth Meteor packages help me to simulate connections to a Meteor
+user account system while I'm unit testing my database queries.
+
+You can add those packages to your Meteor system with these commands:
+```bash
+meteor add dburles:factory
+meteor add practicalmeteor:sinon
 ```
 

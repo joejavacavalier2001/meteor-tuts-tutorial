@@ -20,6 +20,7 @@ coffeescript@1.0.17
 cultofcoders:grapher@1.3.7_4
 cultofcoders:mocha@2.4.6
 cultofcoders:persistent-session@0.4.5
+dburles:factory@1.1.0
 dburles:mongo-collection-instances@0.3.5
 ddp@1.4.0
 ddp-client@2.3.3

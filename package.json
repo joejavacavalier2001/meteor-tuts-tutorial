@@ -4,7 +4,7 @@
   "scripts": {
     "start": "meteor run",
     "lint": "eslint . --ext .jsx --ext .js --fix",
-    "test": "meteor test --driver-package cultofcoders:mocha"
+    "test": "echo 'sorry, no unit tests available at this time'" 
   },
   "lint-staged": {
     "*.js": "eslint --fix",

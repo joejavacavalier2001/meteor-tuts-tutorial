@@ -28,3 +28,5 @@ underscore@1.0.10
 cultofcoders:grapher
 matb33:collection-hooks
 cultofcoders:mocha
+dburles:factory
+practicalmeteor:sinon
